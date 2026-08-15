@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, Response
 import os
+import json
 import requests
 
 app = Flask(__name__)
@@ -11,484 +12,469 @@ HTML = r"""
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#08050d">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#080a0f">
+
 <title>OFFLINE AI</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
-html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+html,body{
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
 }
 
-body {
-    font-family: Tahoma, Arial, sans-serif;
-    color: #fff;
+body{
+    font-family:
+        Tahoma,
+        Arial,
+        sans-serif;
     background:
-        radial-gradient(circle at 15% 15%, rgba(255,70,170,.16), transparent 28%),
-        radial-gradient(circle at 85% 20%, rgba(120,70,255,.18), transparent 30%),
-        radial-gradient(circle at 50% 100%, rgba(255,30,130,.12), transparent 35%),
-        #08050d;
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(70,90,130,.20),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 0% 100%,
+            rgba(30,60,100,.16),
+            transparent 32%
+        ),
+        #080a0f;
+    color:#f3f5f8;
 }
 
-body::before,
-body::after {
-    content: "";
-    position: fixed;
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    opacity: .35;
-    animation: floatLight 8s ease-in-out infinite alternate;
+.app{
+    width:100%;
+    max-width:760px;
+    height:100dvh;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow:hidden;
 }
 
-body::before {
-    background: #ff2f9d;
-    top: -100px;
-    right: -80px;
+/* HEADER */
+
+.header{
+    height:70px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 15px;
+    background:rgba(8,10,15,.88);
+    border-bottom:1px solid rgba(255,255,255,.07);
+    backdrop-filter:blur(22px);
+    z-index:10;
 }
 
-body::after {
-    background: #684cff;
-    bottom: -120px;
-    left: -100px;
-    animation-delay: 2s;
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
 }
 
-@keyframes floatLight {
-    from {
-        transform: translate(0,0) scale(1);
-    }
-
-    to {
-        transform: translate(35px,25px) scale(1.15);
-    }
-}
-
-.app {
-    position: relative;
-    width: 100%;
-    max-width: 720px;
-    height: 100dvh;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.header {
-    position: relative;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 17px;
-    background: rgba(10,6,18,.72);
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    backdrop-filter: blur(20px);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo {
-    position: relative;
-    width: 48px;
-    height: 48px;
-    border-radius: 17px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 13px;
-    color: #fff;
-    background: linear-gradient(135deg,#ff4baa,#743cff);
-    box-shadow:
-        0 0 20px rgba(255,65,170,.35),
-        inset 0 1px 1px rgba(255,255,255,.4);
-}
-
-.logo::after {
-    content: "♥";
-    position: absolute;
-    font-size: 9px;
-    bottom: 5px;
-    left: 6px;
-}
-
-.brand-title {
-    font-size: 17px;
-    font-weight: 800;
-}
-
-.brand-subtitle {
-    margin-top: 4px;
-    font-size: 10px;
-    color: #c4afc9;
-}
-
-.online {
-    color: #ff80c4;
-}
-
-.dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin-left: 4px;
-    border-radius: 50%;
-    background: #ff55ad;
-    box-shadow: 0 0 9px #ff55ad;
-}
-
-.clear-btn {
-    width: 42px;
-    height: 42px;
-    border: 1px solid rgba(255,255,255,.09);
-    border-radius: 14px;
-    background: rgba(255,255,255,.05);
-    color: #fff;
-    font-size: 19px;
-}
-
-.welcome {
-    position: relative;
-    text-align: center;
-    padding: 27px 20px 10px;
-    z-index: 2;
-}
-
-.hero {
-    position: relative;
-    width: 92px;
-    height: 92px;
-    margin: 0 auto 16px;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.main-avatar{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:12px;
+    letter-spacing:-.5px;
+    color:white;
     background:
         linear-gradient(
             145deg,
-            rgba(255,255,255,.15),
-            rgba(255,255,255,.03)
+            #202735,
+            #10141c
         );
-    border: 1px solid rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.12);
     box-shadow:
-        0 0 45px rgba(255,55,169,.18),
-        inset 0 1px 1px rgba(255,255,255,.2);
-    backdrop-filter: blur(20px);
-    animation: heroFloat 4s ease-in-out infinite;
+        0 8px 25px rgba(0,0,0,.35),
+        inset 0 1px rgba(255,255,255,.12);
 }
 
-.hero::before {
-    content: "";
-    position: absolute;
-    inset: -8px;
-    border-radius: 35px;
-    border: 1px solid rgba(255,70,180,.18);
-    animation: pulse 2.5s ease-in-out infinite;
+.brand-name{
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:.2px;
 }
 
-.hero-heart {
-    font-size: 43px;
-    color: #ff55b0;
-    text-shadow:
-        0 0 12px #ff55b0,
-        0 0 35px rgba(255,55,170,.7);
+.brand-status{
+    margin-top:4px;
+    font-size:9px;
+    color:#8993a3;
 }
 
-@keyframes heroFloat {
-    0%,100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-7px);
-    }
+.status-dot{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#35d58a;
+    box-shadow:0 0 8px rgba(53,213,138,.8);
+    margin-left:4px;
 }
 
-@keyframes pulse {
-    0%,100% {
-        transform: scale(.98);
-        opacity: .4;
-    }
-
-    50% {
-        transform: scale(1.06);
-        opacity: 1;
-    }
+.header-btn{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.045);
+    color:#d9dee7;
+    font-size:18px;
 }
 
-.welcome h1 {
-    margin: 0;
-    font-size: 25px;
-    background: linear-gradient(
-        90deg,
-        #fff,
-        #ffb4dd,
-        #b9a7ff
-    );
-    -webkit-background-clip: text;
-    color: transparent;
+/* WELCOME */
+
+.welcome{
+    padding:28px 18px 14px;
+    text-align:center;
 }
 
-.welcome p {
-    margin: 9px 0 0;
-    color: #a99baa;
-    font-size: 12px;
-}
-
-.messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px 16px 14px;
-    scroll-behavior: smooth;
-    z-index: 2;
-}
-
-.messages::-webkit-scrollbar {
-    width: 3px;
-}
-
-.messages::-webkit-scrollbar-thumb {
-    background: rgba(255,90,180,.35);
-    border-radius: 20px;
-}
-
-.message {
-    display: flex;
-    margin: 12px 0;
-    animation: messageIn .3s ease;
-}
-
-@keyframes messageIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.message.user {
-    justify-content: flex-start;
-}
-
-.message.ai {
-    justify-content: flex-end;
-}
-
-.bubble {
-    max-width: 86%;
-    padding: 13px 16px;
-    font-size: 14px;
-    line-height: 1.9;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    border-radius: 21px;
-}
-
-.user .bubble {
+.welcome-avatar{
+    width:84px;
+    height:84px;
+    margin:auto;
+    border-radius:25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:23px;
+    font-weight:900;
     background:
         linear-gradient(
-            135deg,
-            rgba(255,66,166,.18),
-            rgba(116,61,255,.16)
+            145deg,
+            #242b38,
+            #0f131b
         );
-    border: 1px solid rgba(255,100,190,.15);
-    border-bottom-right-radius: 6px;
-    color: #f9edf6;
-    box-shadow: 0 8px 25px rgba(0,0,0,.15);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.38),
+        0 0 35px rgba(70,100,150,.13),
+        inset 0 1px rgba(255,255,255,.13);
 }
 
-.ai .bubble {
-    color: #fff;
+.welcome h1{
+    margin:15px 0 7px;
+    font-size:24px;
+    font-weight:900;
     background:
         linear-gradient(
-            135deg,
-            rgba(255,255,255,.105),
-            rgba(255,255,255,.045)
+            90deg,
+            #ffffff,
+            #b9c5d7
         );
-    border: 1px solid rgba(255,255,255,.11);
-    border-bottom-left-radius: 6px;
-    box-shadow: 0 8px 25px rgba(0,0,0,.18);
-    backdrop-filter: blur(15px);
+    -webkit-background-clip:text;
+    color:transparent;
 }
 
-.typing {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-    height: 20px;
+.welcome p{
+    margin:0;
+    color:#737d8d;
+    font-size:11px;
 }
 
-.typing span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ff6eb9;
-    animation: typing 1.1s infinite;
+/* MESSAGES */
+
+.messages{
+    flex:1;
+    overflow-y:auto;
+    padding:8px 13px 15px;
+    scroll-behavior:smooth;
 }
 
-.typing span:nth-child(2) {
-    animation-delay: .15s;
+.messages::-webkit-scrollbar{
+    width:3px;
 }
 
-.typing span:nth-child(3) {
-    animation-delay: .3s;
+.messages::-webkit-scrollbar-thumb{
+    background:#29313d;
+    border-radius:20px;
 }
 
-@keyframes typing {
-    0%,60%,100% {
-        transform: translateY(0);
-        opacity: .35;
+.message{
+    display:flex;
+    gap:9px;
+    margin:13px 0;
+    animation:messageIn .22s ease-out;
+}
+
+@keyframes messageIn{
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.message.user{
+    flex-direction:row-reverse;
+}
+
+.profile{
+    width:34px;
+    height:34px;
+    min-width:34px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:8px;
+    font-weight:900;
+    color:#fff;
+    background:
+        linear-gradient(
+            145deg,
+            #202733,
+            #10141b
+        );
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+
+.user .profile{
+    background:
+        linear-gradient(
+            145deg,
+            #293342,
+            #151a22
+        );
+}
+
+.message-content{
+    max-width:82%;
+}
+
+.profile-name{
+    font-size:9px;
+    color:#707b8c;
+    margin:1px 4px 5px;
+}
+
+.user .profile-name{
+    text-align:right;
+}
+
+.bubble{
+    padding:11px 14px;
+    border-radius:16px;
+    font-size:13px;
+    line-height:1.9;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+.ai .bubble{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.035)
+        );
+    border:1px solid rgba(255,255,255,.08);
+    border-top-right-radius:5px;
+    color:#e9edf3;
+}
+
+.user .bubble{
+    background:
+        linear-gradient(
+            145deg,
+            #202733,
+            #171c25
+        );
+    border:1px solid rgba(255,255,255,.08);
+    border-top-left-radius:5px;
+    color:#f4f6f9;
+}
+
+/* TYPING */
+
+.typing{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    height:18px;
+}
+
+.typing span{
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:#aeb8c8;
+    animation:typing 1s infinite;
+}
+
+.typing span:nth-child(2){
+    animation-delay:.13s;
+}
+
+.typing span:nth-child(3){
+    animation-delay:.26s;
+}
+
+@keyframes typing{
+    0%,100%{
+        opacity:.25;
+        transform:translateY(0);
+    }
+    50%{
+        opacity:1;
+        transform:translateY(-3px);
+    }
+}
+
+/* SUGGESTIONS */
+
+.suggestions{
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    padding:5px 13px 9px;
+}
+
+.suggestions::-webkit-scrollbar{
+    display:none;
+}
+
+.suggestion{
+    flex-shrink:0;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.045);
+    color:#aeb7c5;
+    padding:8px 12px;
+    border-radius:18px;
+    font-family:inherit;
+    font-size:10px;
+}
+
+.suggestion:active{
+    transform:scale(.96);
+}
+
+/* INPUT */
+
+.input-area{
+    flex-shrink:0;
+    padding:
+        8px
+        12px
+        calc(10px + env(safe-area-inset-bottom));
+    background:rgba(7,9,13,.94);
+    border-top:1px solid rgba(255,255,255,.07);
+    backdrop-filter:blur(22px);
+}
+
+.input-box{
+    display:flex;
+    align-items:flex-end;
+    gap:7px;
+    padding:5px;
+    border-radius:18px;
+    background:#11151c;
+    border:1px solid rgba(255,255,255,.09);
+}
+
+textarea{
+    flex:1;
+    min-width:0;
+    height:43px;
+    max-height:115px;
+    resize:none;
+    outline:none;
+    border:0;
+    background:transparent;
+    color:#f5f7fa;
+    font-family:inherit;
+    font-size:13px;
+    padding:12px 8px;
+}
+
+textarea::placeholder{
+    color:#626c7b;
+}
+
+.send{
+    width:43px;
+    height:43px;
+    border:0;
+    border-radius:14px;
+    color:#fff;
+    background:
+        linear-gradient(
+            145deg,
+            #3a4658,
+            #202733
+        );
+    border:1px solid rgba(255,255,255,.10);
+    font-size:17px;
+    transition:.15s;
+}
+
+.send:active{
+    transform:scale(.91);
+}
+
+.send.loading{
+    opacity:.55;
+}
+
+.footer{
+    text-align:center;
+    color:#4e5867;
+    font-size:7px;
+    margin-top:6px;
+}
+
+@media(max-width:480px){
+
+    .header{
+        height:64px;
+        padding:8px 12px;
     }
 
-    30% {
-        transform: translateY(-5px);
-        opacity: 1;
-    }
-}
-
-.suggestions {
-    position: relative;
-    z-index: 4;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 6px 15px 10px;
-}
-
-.suggestions::-webkit-scrollbar {
-    display: none;
-}
-
-.suggestions button {
-    flex-shrink: 0;
-    border: 1px solid rgba(255,100,190,.14);
-    border-radius: 20px;
-    padding: 9px 13px;
-    color: #d9c8d9;
-    background: rgba(255,255,255,.045);
-    font-family: inherit;
-    font-size: 11px;
-    backdrop-filter: blur(10px);
-}
-
-.suggestions button:active {
-    transform: scale(.96);
-}
-
-.input-area {
-    position: relative;
-    z-index: 5;
-    padding: 9px 13px 13px;
-    background: rgba(8,5,13,.82);
-    border-top: 1px solid rgba(255,255,255,.07);
-    backdrop-filter: blur(22px);
-}
-
-.input-box {
-    display: flex;
-    align-items: flex-end;
-    gap: 7px;
-    padding: 6px;
-    border-radius: 23px;
-    background: rgba(255,255,255,.055);
-    border: 1px solid rgba(255,100,190,.14);
-    box-shadow: 0 8px 30px rgba(0,0,0,.25);
-}
-
-textarea {
-    flex: 1;
-    height: 44px;
-    max-height: 110px;
-    resize: none;
-    border: 0;
-    outline: 0;
-    color: #fff;
-    background: transparent;
-    font-family: inherit;
-    font-size: 14px;
-    padding: 12px 8px;
-}
-
-textarea::placeholder {
-    color: #776b79;
-}
-
-.send {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    border: 0;
-    border-radius: 16px;
-    color: #fff;
-    font-size: 18px;
-    background: linear-gradient(
-        135deg,
-        #ff4baa,
-        #7040ff
-    );
-    box-shadow:
-        0 0 18px rgba(255,65,170,.3),
-        inset 0 1px 1px rgba(255,255,255,.3);
-}
-
-.send:active {
-    transform: scale(.92);
-}
-
-.footer {
-    text-align: center;
-    margin-top: 7px;
-    font-size: 8px;
-    color: #5f5362;
-}
-
-@media (max-width:480px) {
-
-    .header {
-        padding: 13px 14px;
+    .main-avatar{
+        width:42px;
+        height:42px;
     }
 
-    .welcome {
-        padding-top: 23px;
+    .welcome{
+        padding-top:21px;
     }
 
-    .hero {
-        width: 78px;
-        height: 78px;
-        border-radius: 25px;
+    .welcome-avatar{
+        width:72px;
+        height:72px;
+        border-radius:22px;
+        font-size:20px;
     }
 
-    .hero-heart {
-        font-size: 36px;
+    .welcome h1{
+        font-size:21px;
     }
 
-    .welcome h1 {
-        font-size: 22px;
+    .message-content{
+        max-width:84%;
     }
 
-    .bubble {
-        font-size: 13px;
-        max-width: 89%;
+    .bubble{
+        font-size:12.5px;
     }
 }
 </style>
@@ -502,29 +488,27 @@ textarea::placeholder {
 
     <div class="brand">
 
-        <div class="logo">OFF</div>
+        <div class="main-avatar">
+            OFF
+        </div>
 
         <div>
-
-            <div class="brand-title">
+            <div class="brand-name">
                 OFFLINE AI
             </div>
 
-            <div class="brand-subtitle">
-                <span class="dot"></span>
-                <span class="online">
-                    همیشه آماده گفت‌وگو
-                </span>
+            <div class="brand-status">
+                <span class="status-dot"></span>
+                آماده پاسخ‌گویی
             </div>
-
         </div>
 
     </div>
 
     <button
-        class="clear-btn"
+        class="header-btn"
         onclick="clearChat()">
-        ⋮
+        ⌫
     </button>
 
 </header>
@@ -534,16 +518,16 @@ textarea::placeholder {
     class="welcome"
     id="welcome">
 
-    <div class="hero">
-        <div class="hero-heart">♥</div>
+    <div class="welcome-avatar">
+        OFF
     </div>
 
     <h1>
-        به دنیای OFFLINE خوش آمدی
+        خوش آمدی به OFFLINE AI
     </h1>
 
     <p>
-        یک گفت‌وگوی متفاوت، آرام و هوشمندانه ✨
+        سریع، هوشمند و همیشه آماده گفت‌وگو
     </p>
 
 </section>
@@ -558,23 +542,27 @@ textarea::placeholder {
 <div class="suggestions">
 
     <button
+        class="suggestion"
         onclick="quickAsk('سلام، خودت را معرفی کن')">
-        ✨ معرفی خودت
+        معرفی OFFLINE AI
     </button>
 
     <button
+        class="suggestion"
         onclick="quickAsk('سازنده تو کیست؟')">
-        👑 سازنده
+        سازنده
     </button>
 
     <button
-        onclick="quickAsk('برای یادگیری برنامه نویسی راهنمایی‌ام کن')">
-        💻 برنامه‌نویسی
+        class="suggestion"
+        onclick="quickAsk('برای یادگیری برنامه نویسی کمکم کن')">
+        برنامه‌نویسی
     </button>
 
     <button
-        onclick="quickAsk('یک متن زیبا و احساسی برایم بنویس')">
-        💜 متن زیبا
+        class="suggestion"
+        onclick="quickAsk('یک ایده جالب بهم بده')">
+        ایده
     </button>
 
 </div>
@@ -586,12 +574,13 @@ textarea::placeholder {
 
         <textarea
             id="input"
-            placeholder="حرف دلت را بنویس..."
-            oninput="autoResize(this)"
+            placeholder="پیامت را بنویس..."
+            oninput="resizeInput(this)"
             onkeydown="handleKey(event)"
         ></textarea>
 
         <button
+            id="send"
             class="send"
             onclick="sendMessage()">
             ➤
@@ -619,8 +608,24 @@ const messages =
 const welcome =
     document.getElementById("welcome");
 
+const sendButton =
+    document.getElementById("send");
 
-function addMessage(text, type) {
+
+function scrollBottom(){
+
+    requestAnimationFrame(() => {
+        messages.scrollTop =
+            messages.scrollHeight;
+    });
+}
+
+
+function addMessage(
+    text,
+    type,
+    streaming = false
+){
 
     welcome.style.display = "none";
 
@@ -630,6 +635,37 @@ function addMessage(text, type) {
     row.className =
         "message " + type;
 
+    const profile =
+        document.createElement("div");
+
+    profile.className =
+        "profile";
+
+    profile.textContent =
+        type === "user"
+            ? "OFF"
+            : "AI";
+
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "message-content";
+
+
+    const name =
+        document.createElement("div");
+
+    name.className =
+        "profile-name";
+
+    name.textContent =
+        type === "user"
+            ? "OFFLINE"
+            : "OFFLINE AI";
+
+
     const bubble =
         document.createElement("div");
 
@@ -637,20 +673,24 @@ function addMessage(text, type) {
         "bubble";
 
     bubble.textContent =
-        text;
+        text || "";
 
-    row.appendChild(bubble);
+
+    content.appendChild(name);
+    content.appendChild(bubble);
+
+    row.appendChild(profile);
+    row.appendChild(content);
 
     messages.appendChild(row);
 
-    messages.scrollTop =
-        messages.scrollHeight;
+    scrollBottom();
 
     return bubble;
 }
 
 
-function addTyping() {
+function addTyping(){
 
     welcome.style.display = "none";
 
@@ -659,6 +699,32 @@ function addTyping() {
 
     row.className =
         "message ai";
+
+    const profile =
+        document.createElement("div");
+
+    profile.className =
+        "profile";
+
+    profile.textContent = "AI";
+
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "message-content";
+
+
+    const name =
+        document.createElement("div");
+
+    name.className =
+        "profile-name";
+
+    name.textContent =
+        "OFFLINE AI";
+
 
     const bubble =
         document.createElement("div");
@@ -674,33 +740,37 @@ function addTyping() {
         </div>
     `;
 
-    row.appendChild(bubble);
+
+    content.appendChild(name);
+    content.appendChild(bubble);
+
+    row.appendChild(profile);
+    row.appendChild(content);
 
     messages.appendChild(row);
 
-    messages.scrollTop =
-        messages.scrollHeight;
+    scrollBottom();
 
     return row;
 }
 
 
-function quickAsk(text) {
+function quickAsk(text){
 
     input.value = text;
 
-    autoResize(input);
+    resizeInput(input);
 
     sendMessage();
 }
 
 
-function handleKey(event) {
+function handleKey(event){
 
-    if (
+    if(
         event.key === "Enter" &&
         !event.shiftKey
-    ) {
+    ){
 
         event.preventDefault();
 
@@ -709,24 +779,24 @@ function handleKey(event) {
 }
 
 
-function autoResize(element) {
+function resizeInput(element){
 
-    element.style.height = "44px";
+    element.style.height = "43px";
 
     element.style.height =
         Math.min(
             element.scrollHeight,
-            110
+            115
         ) + "px";
 }
 
 
-async function sendMessage() {
+async function sendMessage(){
 
     const text =
         input.value.trim();
 
-    if (!text) return;
+    if(!text) return;
 
     addMessage(
         text,
@@ -735,77 +805,185 @@ async function sendMessage() {
 
     input.value = "";
 
-    input.style.height =
-        "44px";
+    input.style.height = "43px";
+
+    sendButton.classList.add("loading");
+
+    sendButton.disabled = true;
 
     const typing =
         addTyping();
 
-    try {
+    try{
 
         const response =
             await fetch(
                 "/chat",
                 {
-                    method: "POST",
+                    method:"POST",
 
-                    headers: {
+                    headers:{
                         "Content-Type":
                             "application/json"
                     },
 
-                    body: JSON.stringify({
-                        message: text
+                    body:JSON.stringify({
+                        message:text
                     })
                 }
             );
 
-        const data =
-            await response.json();
+
+        if(!response.ok){
+
+            const error =
+                await response.json();
+
+            typing.remove();
+
+            addMessage(
+                error.error ||
+                "خطا در ارتباط با هوش مصنوعی.",
+                "ai"
+            );
+
+            return;
+        }
+
 
         typing.remove();
 
-        if (data.reply) {
 
+        const bubble =
             addMessage(
-                data.reply,
+                "",
                 "ai"
             );
 
-        } else {
 
-            addMessage(
-                data.error ||
-                "یک خطای ناشناخته رخ داد.",
-                "ai"
-            );
+        const reader =
+            response.body.getReader();
+
+        const decoder =
+            new TextDecoder();
+
+        let fullText = "";
+
+
+        while(true){
+
+            const {
+                value,
+                done
+            } =
+                await reader.read();
+
+            if(done) break;
+
+
+            const chunk =
+                decoder.decode(
+                    value,
+                    {
+                        stream:true
+                    }
+                );
+
+
+            const lines =
+                chunk.split("\n");
+
+
+            for(
+                const line of lines
+            ){
+
+                if(
+                    !line.startsWith("data:")
+                ){
+                    continue;
+                }
+
+
+                const data =
+                    line.slice(5).trim();
+
+
+                if(
+                    !data ||
+                    data === "[DONE]"
+                ){
+                    continue;
+                }
+
+
+                try{
+
+                    const parsed =
+                        JSON.parse(data);
+
+
+                    if(parsed.error){
+
+                        fullText +=
+                            parsed.error;
+
+                    }else{
+
+                        fullText +=
+                            parsed.text || "";
+                    }
+
+
+                    bubble.textContent =
+                        fullText;
+
+                    scrollBottom();
+
+                }catch(e){
+                    // نادیده گرفتن قطعه ناقص
+                }
+            }
         }
 
-    } catch (error) {
+
+        if(!fullText){
+
+            bubble.textContent =
+                "پاسخی دریافت نشد. دوباره تلاش کن.";
+        }
+
+    }catch(error){
 
         typing.remove();
 
         addMessage(
-            "ارتباط با سرور برقرار نشد. دوباره تلاش کن.",
+            "ارتباط با سرور برقرار نشد. لطفاً دوباره تلاش کن.",
             "ai"
         );
+
+    }finally{
+
+        sendButton.classList.remove(
+            "loading"
+        );
+
+        sendButton.disabled =
+            false;
+
+        input.focus();
     }
 }
 
 
-function clearChat() {
+function clearChat(){
 
-    if (
-        confirm(
-            "گفت‌وگو پاک شود؟"
-        )
-    ) {
+    messages.innerHTML = "";
 
-        messages.innerHTML = "";
+    welcome.style.display =
+        "block";
 
-        welcome.style.display =
-            "block";
-    }
+    input.focus();
 }
 
 </script>
@@ -823,7 +1001,9 @@ def home():
 @app.route("/chat", methods=["POST"])
 def chat():
 
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(
+        silent=True
+    ) or {}
 
     message = data.get(
         "message",
@@ -832,18 +1012,47 @@ def chat():
 
     if not message:
         return jsonify({
-            "error": "پیام خالی است."
+            "error":
+                "پیام خالی است."
         }), 400
+
 
     if not GROQ_API_KEY:
         return jsonify({
             "error":
-                "کلید GROQ_API_KEY در Render تنظیم نشده است."
+                "GROQ_API_KEY در Render تنظیم نشده است."
         }), 500
+
+
+    system_prompt = """
+تو OFFLINE AI هستی؛ یک دستیار هوش مصنوعی مدرن.
+
+هویت رسمی برند:
+
+نام محصول:
+OFFLINE AI
+
+سازنده و بنیان‌گذار:
+ریس آفلاین کندزی
+
+اگر کاربر درباره سازنده، بنیان‌گذار، خالق یا صاحب OFFLINE AI پرسید، بگو:
+
+«سازنده و بنیان‌گذار من ریس آفلاین کندزی است؛ خالق پروژه OFFLINE AI.»
+
+اگر کاربر پرسید «تو کی هستی؟» یا درباره OFFLINE AI سؤال کرد، بگو:
+
+«من OFFLINE AI هستم؛ یک دستیار هوش مصنوعی مدرن که با هدف ارائه تجربه‌ای هوشمند، زیبا و متفاوت ساخته شده‌ام. سازنده و بنیان‌گذار من ریس آفلاین کندزی است؛ کسی که ایده OFFLINE AI را به یک پروژه واقعی تبدیل کرده است.»
+
+با کاربر به زبان خودش صحبت کن.
+پاسخ‌ها طبیعی، واضح، محترمانه و مفید باشند.
+درباره سازنده اطلاعاتی که مشخص نشده را اختراع نکن.
+"""
+
 
     try:
 
         response = requests.post(
+
             "https://api.groq.com/openai/v1/chat/completions",
 
             headers={
@@ -856,87 +1065,184 @@ def chat():
 
             json={
 
+                # مدل سریع برای گفت‌وگوی روزمره
                 "model":
-                    "llama-3.3-70b-versatile",
+                    "llama-3.1-8b-instant",
 
-                "messages": [
+                "messages":[
 
                     {
-                        "role": "system",
+                        "role":
+                            "system",
 
-                        "content": """
-تو OFFLINE AI هستی؛ یک دستیار هوش مصنوعی مدرن که با هدف ارائه تجربه‌ای هوشمند، زیبا و متفاوت ساخته شده‌ای.
-
-هویت رسمی برند:
-
-نام محصول:
-OFFLINE AI
-
-سازنده و بنیان‌گذار:
-ریس آفلاین کندزی
-
-اگر کاربر درباره سازنده، بنیان‌گذار، خالق یا صاحب OFFLINE AI پرسید، پاسخ بده:
-
-«سازنده و بنیان‌گذار من ریس آفلاین کندزی است؛ خالق پروژه OFFLINE AI.»
-
-اگر کاربر پرسید «تو کی هستی؟» یا درباره OFFLINE AI سؤال کرد، می‌توانی بگویی:
-
-«من OFFLINE AI هستم؛ یک دستیار هوش مصنوعی مدرن که با هدف ارائه تجربه‌ای هوشمند، زیبا و متفاوت ساخته شده‌ام. سازنده و بنیان‌گذار من ریس آفلاین کندزی است؛ کسی که ایده OFFLINE AI را به یک پروژه واقعی تبدیل کرده است. هدف OFFLINE AI ساختن تجربه‌ای ساده، قدرتمند و قابل استفاده برای همه است.»
-
-با کاربر به زبان خودش صحبت کن.
-
-پاسخ‌ها باید:
-واضح،
-دوستانه،
-محترمانه،
-طبیعی،
-و مفید باشند.
-
-درباره سازنده اطلاعاتی که در این دستور مشخص نشده را از خودت اختراع نکن.
-"""
+                        "content":
+                            system_prompt
                     },
 
                     {
-                        "role": "user",
-                        "content": message
+                        "role":
+                            "user",
+
+                        "content":
+                            message
                     }
 
                 ],
 
-                "temperature": 0.7,
+                "temperature":
+                    0.6,
 
-                "max_tokens": 1500
+                "max_tokens":
+                    1000,
+
+                # پاسخ به صورت زنده
+                "stream":
+                    True
             },
+
+            stream=True,
 
             timeout=60
         )
 
-        result = response.json()
 
         if response.status_code != 200:
 
-            error_message = (
-                result
-                .get("error", {})
-                .get(
-                    "message",
-                    "خطا در ارتباط با سرویس هوش مصنوعی."
-                )
-            )
+            try:
+                error_data =
+                    response.json()
+
+                error_text =
+                    error_data.get(
+                        "error",
+                        {}
+                    ).get(
+                        "message",
+                        "خطا در سرویس هوش مصنوعی."
+                    )
+
+            except Exception:
+
+                error_text =
+                    "خطا در سرویس هوش مصنوعی."
 
             return jsonify({
                 "error":
-                    error_message
+                    error_text
             }), 500
 
-        reply = (
-            result["choices"][0]
-            ["message"]["content"]
+
+        def generate():
+
+            try:
+
+                for line in response.iter_lines(
+                    decode_unicode=True
+                ):
+
+                    if not line:
+                        continue
+
+
+                    if not line.startswith(
+                        "data:"
+                    ):
+                        continue
+
+
+                    data =
+                        line[5:].strip()
+
+
+                    if data == "[DONE]":
+                        break
+
+
+                    try:
+
+                        parsed =
+                            json.loads(data)
+
+
+                        choices =
+                            parsed.get(
+                                "choices",
+                                []
+                            )
+
+
+                        if not choices:
+                            continue
+
+
+                        delta =
+                            choices[0].get(
+                                "delta",
+                                {}
+                            )
+
+
+                        text =
+                            delta.get(
+                                "content",
+                                ""
+                            )
+
+
+                        if text:
+
+                            yield (
+                                "data: "
+                                + json.dumps(
+                                    {
+                                        "text":
+                                            text
+                                    },
+                                    ensure_ascii=False
+                                )
+                                + "\n\n"
+                            )
+
+                    except Exception:
+                        continue
+
+
+                yield "data: [DONE]\n\n"
+
+
+            except Exception as error:
+
+                yield (
+                    "data: "
+                    + json.dumps(
+                        {
+                            "error":
+                                "ارتباط با سرویس قطع شد."
+                        },
+                        ensure_ascii=False
+                    )
+                    + "\n\n"
+                )
+
+
+        return Response(
+
+            generate(),
+
+            mimetype="text/event-stream",
+
+            headers={
+                "Cache-Control":
+                    "no-cache",
+
+                "X-Accel-Buffering":
+                    "no",
+
+                "Connection":
+                    "keep-alive"
+            }
         )
 
-        return jsonify({
-            "reply": reply
-        })
 
     except requests.exceptions.Timeout:
 
@@ -945,11 +1251,12 @@ OFFLINE AI
                 "زمان پاسخ‌گویی تمام شد. دوباره تلاش کن."
         }), 504
 
+
     except Exception:
 
         return jsonify({
             "error":
-                "خطایی در سرور رخ داد."
+                "خطایی در ارتباط با سرور رخ داد."
         }), 500
 
 
@@ -965,4 +1272,4 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=port
-)
+                )
