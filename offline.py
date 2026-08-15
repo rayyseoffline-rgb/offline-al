@@ -14,7 +14,6 @@ HTML = r"""
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#070b12">
-
 <title>OFFLINE AI</title>
 
 <style>
@@ -34,8 +33,8 @@ body{
     font-family:Tahoma,Arial,sans-serif;
     color:#eef3f8;
     background:
-        radial-gradient(circle at 80% -10%,rgba(36,104,180,.24),transparent 32%),
-        radial-gradient(circle at -10% 90%,rgba(21,67,120,.20),transparent 32%),
+        radial-gradient(circle at 80% -10%,rgba(36,104,180,.28),transparent 32%),
+        radial-gradient(circle at -10% 90%,rgba(21,67,120,.24),transparent 32%),
         #070b12;
 }
 
@@ -58,7 +57,7 @@ body{
     align-items:center;
     justify-content:space-between;
     padding:9px 14px;
-    background:rgba(6,10,16,.91);
+    background:rgba(6,10,16,.93);
     border-bottom:1px solid rgba(255,255,255,.07);
     backdrop-filter:blur(22px);
     z-index:10;
@@ -78,9 +77,9 @@ body{
     align-items:center;
     justify-content:center;
     background:linear-gradient(145deg,#18283c,#0b111a);
-    border:1px solid rgba(107,181,255,.25);
+    border:1px solid rgba(107,181,255,.28);
     box-shadow:
-        0 0 24px rgba(40,130,220,.16),
+        0 0 24px rgba(40,130,220,.18),
         inset 0 1px rgba(255,255,255,.12);
 }
 
@@ -136,12 +135,11 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    background:
-        linear-gradient(145deg,#162538,#090f17);
+    background:linear-gradient(145deg,#162538,#090f17);
     border:1px solid rgba(105,180,255,.23);
     box-shadow:
         0 20px 50px rgba(0,0,0,.42),
-        0 0 45px rgba(38,126,210,.13),
+        0 0 45px rgba(38,126,210,.15),
         inset 0 1px rgba(255,255,255,.13);
 }
 
@@ -208,13 +206,13 @@ body{
 /* PROFILE */
 
 .profile-wrap{
-    width:36px;
-    min-width:36px;
+    width:38px;
+    min-width:38px;
 }
 
 .profile{
-    width:36px;
-    height:36px;
+    width:38px;
+    height:38px;
     border-radius:12px;
     display:flex;
     align-items:center;
@@ -222,9 +220,8 @@ body{
     font-size:8px;
     font-weight:900;
     color:#e9f3ff;
-    background:
-        linear-gradient(145deg,#1c2c3f,#0d141d);
-    border:1px solid rgba(101,176,255,.19);
+    background:linear-gradient(145deg,#1c2c3f,#0d141d);
+    border:1px solid rgba(101,176,255,.22);
     box-shadow:0 6px 17px rgba(0,0,0,.35);
 }
 
@@ -253,9 +250,11 @@ body{
 
 .ai .bubble{
     background:
-        linear-gradient(145deg,
-        rgba(255,255,255,.075),
-        rgba(255,255,255,.028));
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.028)
+        );
     border:1px solid rgba(255,255,255,.08);
     border-top-right-radius:5px;
     color:#e8edf3;
@@ -263,7 +262,11 @@ body{
 
 .user .bubble{
     background:
-        linear-gradient(145deg,#1d2a39,#131b25);
+        linear-gradient(
+            145deg,
+            #1d2a39,
+            #131b25
+        );
     border:1px solid rgba(104,170,230,.12);
     border-top-left-radius:5px;
     color:#f0f4f8;
@@ -333,10 +336,7 @@ body{
 
 .input-area{
     flex-shrink:0;
-    padding:
-        8px
-        12px
-        calc(10px + env(safe-area-inset-bottom));
+    padding:8px 12px calc(10px + env(safe-area-inset-bottom));
     background:rgba(5,8,13,.95);
     border-top:1px solid rgba(255,255,255,.07);
     backdrop-filter:blur(22px);
@@ -445,22 +445,29 @@ textarea::placeholder{
 <div class="logo">
 
 <svg viewBox="0 0 100 100" fill="none">
-<path d="M22 29C22 23 27 18 33 18H67C73 18 78 23 78 29V58C78 64 73 69 67 69H51L39 82V69H33C27 69 22 64 22 58V29Z"
+<path
+d="M22 29C22 23 27 18 33 18H67C73 18 78 23 78 29V58C78 64 73 69 67 69H51L39 82V69H33C27 69 22 64 22 58V29Z"
 stroke="#70B8FF"
 stroke-width="5"
 stroke-linejoin="round"/>
 
-<path d="M35 43H65"
+<path
+d="M35 43H65"
 stroke="#DCEEFF"
 stroke-width="5"
 stroke-linecap="round"/>
 
-<path d="M42 54H58"
+<path
+d="M42 54H58"
 stroke="#70B8FF"
 stroke-width="5"
 stroke-linecap="round"/>
 
-<circle cx="76" cy="24" r="8" fill="#70B8FF"/>
+<circle
+cx="76"
+cy="24"
+r="8"
+fill="#70B8FF"/>
 </svg>
 
 </div>
@@ -480,39 +487,41 @@ OFFLINE AI
 
 </div>
 
-<button
-class="clear"
-onclick="clearChat()">
+<button class="clear" onclick="clearChat()">
 ⌫
 </button>
 
 </header>
 
-
-<section
-class="welcome"
-id="welcome">
+<section class="welcome" id="welcome">
 
 <div class="hero-logo">
 
 <svg viewBox="0 0 100 100" fill="none">
 
-<path d="M22 29C22 23 27 18 33 18H67C73 18 78 23 78 29V58C78 64 73 69 67 69H51L39 82V69H33C27 69 22 64 22 58V29Z"
+<path
+d="M22 29C22 23 27 18 33 18H67C73 18 78 23 78 29V58C78 64 73 69 67 69H51L39 82V69H33C27 69 22 64 22 58V29Z"
 stroke="#70B8FF"
 stroke-width="5"
 stroke-linejoin="round"/>
 
-<path d="M35 43H65"
+<path
+d="M35 43H65"
 stroke="#DCEEFF"
 stroke-width="5"
 stroke-linecap="round"/>
 
-<path d="M42 54H58"
+<path
+d="M42 54H58"
 stroke="#70B8FF"
 stroke-width="5"
 stroke-linecap="round"/>
 
-<circle cx="76" cy="24" r="8" fill="#70B8FF"/>
+<circle
+cx="76"
+cy="24"
+r="8"
+fill="#70B8FF"/>
 
 </svg>
 
@@ -528,41 +537,31 @@ stroke-linecap="round"/>
 
 </section>
 
-
-<main
-class="messages"
-id="messages">
-</main>
-
+<main class="messages" id="messages"></main>
 
 <div class="suggestions">
 
-<button
-class="suggestion"
+<button class="suggestion"
 onclick="quickAsk('سلام، خودت را معرفی کن')">
 معرفی OFFLINE AI
 </button>
 
-<button
-class="suggestion"
+<button class="suggestion"
 onclick="quickAsk('سازنده تو کیست؟')">
 سازنده
 </button>
 
-<button
-class="suggestion"
+<button class="suggestion"
 onclick="quickAsk('برای یادگیری برنامه نویسی کمکم کن')">
 برنامه‌نویسی
 </button>
 
-<button
-class="suggestion"
+<button class="suggestion"
 onclick="quickAsk('یک ایده جالب بهم بده')">
 ایده
 </button>
 
 </div>
-
 
 <div class="input-area">
 
@@ -592,414 +591,262 @@ OFFLINE AI • ساخته‌شده توسط ریس آفلاین کندزی
 
 </div>
 
-
 <script>
 
-const input =
-document.getElementById("input");
-
-const messages =
-document.getElementById("messages");
-
-const welcome =
-document.getElementById("welcome");
-
-const send =
-document.getElementById("send");
-
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+const welcome = document.getElementById("welcome");
+const send = document.getElementById("send");
 
 function scrollBottom(){
-
-requestAnimationFrame(() => {
-
-messages.scrollTop =
-messages.scrollHeight;
-
-});
-
+    requestAnimationFrame(() => {
+        messages.scrollTop = messages.scrollHeight;
+    });
 }
 
+function addMessage(text, type){
 
-function addMessage(text,type){
+    welcome.style.display = "none";
 
-welcome.style.display="none";
+    const row = document.createElement("div");
+    row.className = "message " + type;
 
-const row =
-document.createElement("div");
+    const profileWrap = document.createElement("div");
+    profileWrap.className = "profile-wrap";
 
-row.className =
-"message " + type;
+    const profile = document.createElement("div");
+    profile.className = "profile";
+    profile.textContent = type === "user" ? "OFF" : "AI";
 
+    const profileName = document.createElement("div");
+    profileName.className = "profile-name";
+    profileName.textContent =
+        type === "user" ? "آفلاین" : "OFFLINE AI";
 
-const profileWrap =
-document.createElement("div");
+    profileWrap.appendChild(profile);
+    profileWrap.appendChild(profileName);
 
-profileWrap.className =
-"profile-wrap";
+    const content = document.createElement("div");
+    content.className = "content";
 
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text || "";
 
-const profile =
-document.createElement("div");
+    content.appendChild(bubble);
 
-profile.className =
-"profile";
+    row.appendChild(profileWrap);
+    row.appendChild(content);
 
-profile.textContent =
-type === "user"
-? "OFF"
-: "AI";
+    messages.appendChild(row);
 
+    scrollBottom();
 
-const profileName =
-document.createElement("div");
-
-profileName.className =
-"profile-name";
-
-profileName.textContent =
-type === "user"
-? "آفلاین"
-: "OFFLINE AI";
-
-
-profileWrap.appendChild(profile);
-profileWrap.appendChild(profileName);
-
-
-const content =
-document.createElement("div");
-
-content.className =
-"content";
-
-
-const bubble =
-document.createElement("div");
-
-bubble.className =
-"bubble";
-
-bubble.textContent =
-text || "";
-
-
-content.appendChild(bubble);
-
-row.appendChild(profileWrap);
-row.appendChild(content);
-
-messages.appendChild(row);
-
-scrollBottom();
-
-return bubble;
-
+    return bubble;
 }
-
 
 function addTyping(){
 
-welcome.style.display="none";
+    welcome.style.display = "none";
 
-const row =
-document.createElement("div");
+    const row = document.createElement("div");
+    row.className = "message ai";
 
-row.className =
-"message ai";
+    const profileWrap = document.createElement("div");
+    profileWrap.className = "profile-wrap";
 
+    const profile = document.createElement("div");
+    profile.className = "profile";
+    profile.textContent = "AI";
 
-const profileWrap =
-document.createElement("div");
+    const profileName = document.createElement("div");
+    profileName.className = "profile-name";
+    profileName.textContent = "OFFLINE AI";
 
-profileWrap.className =
-"profile-wrap";
+    profileWrap.appendChild(profile);
+    profileWrap.appendChild(profileName);
 
+    const content = document.createElement("div");
+    content.className = "content";
 
-const profile =
-document.createElement("div");
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
 
-profile.className =
-"profile";
+    bubble.innerHTML = `
+        <div class="typing">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
 
-profile.textContent="AI";
+    content.appendChild(bubble);
 
+    row.appendChild(profileWrap);
+    row.appendChild(content);
 
-const profileName =
-document.createElement("div");
+    messages.appendChild(row);
 
-profileName.className =
-"profile-name";
+    scrollBottom();
 
-profileName.textContent =
-"OFFLINE AI";
-
-
-profileWrap.appendChild(profile);
-profileWrap.appendChild(profileName);
-
-
-const content =
-document.createElement("div");
-
-content.className =
-"content";
-
-
-const bubble =
-document.createElement("div");
-
-bubble.className =
-"bubble";
-
-bubble.innerHTML =
-`
-<div class="typing">
-<span></span>
-<span></span>
-<span></span>
-</div>
-`;
-
-
-content.appendChild(bubble);
-
-row.appendChild(profileWrap);
-row.appendChild(content);
-
-messages.appendChild(row);
-
-scrollBottom();
-
-return row;
-
+    return row;
 }
-
 
 function quickAsk(text){
-
-input.value=text;
-
-resizeInput(input);
-
-sendMessage();
-
+    input.value = text;
+    resizeInput(input);
+    sendMessage();
 }
-
 
 function handleKey(event){
 
-if(
-event.key==="Enter" &&
-!event.shiftKey
-){
-
-event.preventDefault();
-
-sendMessage();
-
+    if(event.key === "Enter" && !event.shiftKey){
+        event.preventDefault();
+        sendMessage();
+    }
 }
-
-}
-
 
 function resizeInput(el){
 
-el.style.height="43px";
+    el.style.height = "43px";
 
-el.style.height =
-Math.min(
-el.scrollHeight,
-115
-) + "px";
-
+    el.style.height =
+        Math.min(el.scrollHeight, 115) + "px";
 }
-
 
 async function sendMessage(){
 
-const text =
-input.value.trim();
+    const text = input.value.trim();
 
-if(!text || send.disabled)
-return;
+    if(!text || send.disabled){
+        return;
+    }
 
+    addMessage(text, "user");
 
-addMessage(
-text,
-"user"
-);
+    input.value = "";
+    input.style.height = "43px";
 
+    send.disabled = true;
 
-input.value="";
+    const typing = addTyping();
 
-input.style.height="43px";
+    try{
 
-send.disabled=true;
+        const response = await fetch("/chat", {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                message:text
+            })
+        });
 
+        if(!response.ok){
 
-const typing =
-addTyping();
+            let errorMessage = "خطا در پاسخ‌گویی.";
 
+            try{
+                const error = await response.json();
+                errorMessage = error.error || errorMessage;
+            }catch(e){}
 
-try{
+            typing.remove();
+            addMessage(errorMessage, "ai");
+            return;
+        }
 
-const response =
-await fetch(
-"/chat",
-{
-method:"POST",
+        typing.remove();
 
-headers:{
-"Content-Type":
-"application/json"
-},
+        const bubble = addMessage("", "ai");
 
-body:JSON.stringify({
-message:text
-})
+        if(!response.body){
+            bubble.textContent = "پاسخی دریافت نشد.";
+            return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        let fullText = "";
+
+        let buffer = "";
+
+        while(true){
+
+            const result = await reader.read();
+
+            if(result.done){
+                break;
+            }
+
+            buffer += decoder.decode(
+                result.value,
+                {stream:true}
+            );
+
+            const parts = buffer.split("\n");
+
+            buffer = parts.pop() || "";
+
+            for(const line of parts){
+
+                if(!line.startsWith("data:")){
+                    continue;
+                }
+
+                const data = line.slice(5).trim();
+
+                if(!data || data === "[DONE]"){
+                    continue;
+                }
+
+                try{
+
+                    const obj = JSON.parse(data);
+
+                    if(obj.error){
+                        fullText += obj.error;
+                    }else{
+                        fullText += obj.text || "";
+                    }
+
+                    bubble.textContent = fullText;
+
+                    scrollBottom();
+
+                }catch(e){}
+            }
+        }
+
+        if(!fullText){
+            bubble.textContent = "پاسخی دریافت نشد.";
+        }
+
+    }catch(error){
+
+        typing.remove();
+
+        addMessage(
+            "ارتباط با سرور برقرار نشد. دوباره تلاش کن.",
+            "ai"
+        );
+
+    }finally{
+
+        send.disabled = false;
+        input.focus();
+    }
 }
-);
-
-
-if(!response.ok){
-
-const error =
-await response.json();
-
-typing.remove();
-
-addMessage(
-error.error ||
-"خطا در پاسخ‌گویی.",
-"ai"
-);
-
-return;
-
-}
-
-
-typing.remove();
-
-
-const bubble =
-addMessage(
-"",
-"ai"
-);
-
-
-const reader =
-response.body.getReader();
-
-const decoder =
-new TextDecoder();
-
-let fullText="";
-
-
-while(true){
-
-const result =
-await reader.read();
-
-if(result.done)
-break;
-
-
-const chunk =
-decoder.decode(
-result.value,
-{
-stream:true
-}
-);
-
-
-const lines =
-chunk.split("\n");
-
-
-for(const line of lines){
-
-if(!line.startsWith("data:"))
-continue;
-
-
-const data =
-line.slice(5).trim();
-
-if(
-!data ||
-data==="[DONE]"
-)
-continue;
-
-
-try{
-
-const obj =
-JSON.parse(data);
-
-if(obj.error){
-
-fullText +=
-obj.error;
-
-}else{
-
-fullText +=
-obj.text || "";
-
-}
-
-bubble.textContent =
-fullText;
-
-scrollBottom();
-
-}catch(e){}
-
-}
-
-}
-
-
-if(!fullText){
-
-bubble.textContent =
-"پاسخی دریافت نشد.";
-
-}
-
-}catch(error){
-
-typing.remove();
-
-addMessage(
-"ارتباط با سرور برقرار نشد. دوباره تلاش کن.",
-"ai"
-);
-
-}finally{
-
-send.disabled=false;
-
-input.focus();
-
-}
-
-}
-
 
 function clearChat(){
 
-messages.innerHTML="";
+    messages.innerHTML = "";
 
-welcome.style.display="block";
+    welcome.style.display = "block";
 
-input.focus();
-
+    input.focus();
 }
 
 </script>
@@ -1017,14 +864,9 @@ def home():
 @app.route("/chat", methods=["POST"])
 def chat():
 
-    data = request.get_json(
-        silent=True
-    ) or {}
+    data = request.get_json(silent=True) or {}
 
-    message = data.get(
-        "message",
-        ""
-    ).strip()
+    message = str(data.get("message", "")).strip()
 
     if not message:
         return jsonify({
@@ -1033,10 +875,8 @@ def chat():
 
     if not GROQ_API_KEY:
         return jsonify({
-            "error":
-            "GROQ_API_KEY در Render تنظیم نشده است."
+            "error": "GROQ_API_KEY در Render تنظیم نشده است."
         }), 500
-
 
     system_prompt = """
 تو OFFLINE AI هستی؛ یک دستیار هوش مصنوعی مدرن.
@@ -1060,77 +900,57 @@ OFFLINE AI
 اطلاعاتی درباره سازنده که مشخص نشده را از خودت اختراع نکن.
 """
 
-
     try:
 
         response = requests.post(
-
             "https://api.groq.com/openai/v1/chat/completions",
 
             headers={
-                "Authorization":
-                f"Bearer {GROQ_API_KEY}",
-
-                "Content-Type":
-                "application/json"
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
             },
 
             json={
-                "model":
-                "llama-3.1-8b-instant",
+                "model": "llama-3.1-8b-instant",
 
                 "messages":[
-
                     {
                         "role":"system",
                         "content":system_prompt
                     },
-
                     {
                         "role":"user",
                         "content":message
                     }
-
                 ],
 
                 "temperature":0.6,
-
                 "max_tokens":1000,
-
                 "stream":True
             },
 
             stream=True,
-
             timeout=60
         )
-
 
         if response.status_code != 200:
 
             try:
+                result = response.json()
 
-                result =
-                    response.json()
-
-                error =
-                    result.get(
-                        "error",
-                        {}
-                    ).get(
+                error = (
+                    result.get("error", {}).get(
                         "message",
                         "خطا در سرویس هوش مصنوعی."
                     )
+                )
 
             except Exception:
-
-                error =
-                    "خطا در سرویس هوش مصنوعی."
+                error = "خطا در سرویس هوش مصنوعی."
 
             return jsonify({
-                "error":error
-            }),500
-
+                "error": error
+            }), 500
 
         def generate():
 
@@ -1143,51 +963,37 @@ OFFLINE AI
                     if not line:
                         continue
 
-                    if not line.startswith(
-                        "data:"
-                    ):
+                    if not line.startswith("data:"):
                         continue
 
-                    data =
-                        line[5:].strip()
+                    data = line[5:].strip()
 
                     if data == "[DONE]":
                         break
 
                     try:
 
-                        obj =
-                            json.loads(data)
+                        obj = json.loads(data)
 
-                        choices =
-                            obj.get(
-                                "choices",
-                                []
-                            )
+                        choices = obj.get("choices", [])
 
                         if not choices:
                             continue
 
-                        delta =
-                            choices[0].get(
-                                "delta",
-                                {}
-                            )
+                        delta = choices[0].get("delta", {})
 
-                        text =
-                            delta.get(
-                                "content",
-                                ""
-                            )
+                        text = delta.get("content", "")
 
                         if text:
+
+                            payload = {
+                                "text": text
+                            }
 
                             yield (
                                 "data: "
                                 + json.dumps(
-                                    {
-                                        "text":text
-                                    },
+                                    payload,
                                     ensure_ascii=False
                                 )
                                 + "\n\n"
@@ -1196,67 +1002,53 @@ OFFLINE AI
                     except Exception:
                         continue
 
-
                 yield "data: [DONE]\n\n"
 
-
             except Exception:
+
+                payload = {
+                    "error": "ارتباط با سرویس قطع شد."
+                }
 
                 yield (
                     "data: "
                     + json.dumps(
-                        {
-                            "error":
-                            "ارتباط با سرویس قطع شد."
-                        },
+                        payload,
                         ensure_ascii=False
                     )
                     + "\n\n"
                 )
 
-
         return Response(
             generate(),
             mimetype="text/event-stream",
             headers={
-                "Cache-Control":
-                "no-cache",
-
-                "X-Accel-Buffering":
-                "no",
-
-                "Connection":
-                "keep-alive"
+                "Cache-Control":"no-cache",
+                "X-Accel-Buffering":"no",
+                "Connection":"keep-alive"
             }
         )
-
 
     except requests.exceptions.Timeout:
 
         return jsonify({
-            "error":
-            "زمان پاسخ‌گویی تمام شد."
-        }),504
-
+            "error": "زمان پاسخ‌گویی تمام شد."
+        }), 504
 
     except Exception:
 
         return jsonify({
-            "error":
-            "خطایی در ارتباط با سرور رخ داد."
-        }),500
+            "error": "خطایی در ارتباط با سرور رخ داد."
+        }), 500
 
 
 if __name__ == "__main__":
 
     port = int(
-        os.environ.get(
-            "PORT",
-            5000
-        )
+        os.environ.get("PORT", 5000)
     )
 
     app.run(
         host="0.0.0.0",
         port=port
-    )
+                            )
