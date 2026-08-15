@@ -12,7 +12,7 @@ HTML = r"""
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090611">
+<meta name="theme-color" content="#08050d">
 <title>OFFLINE AI</title>
 
 <style>
@@ -32,13 +32,12 @@ body {
     font-family: Tahoma, Arial, sans-serif;
     color: #fff;
     background:
-        radial-gradient(circle at 15% 15%, rgba(255, 70, 170, .16), transparent 28%),
-        radial-gradient(circle at 85% 20%, rgba(120, 70, 255, .18), transparent 30%),
-        radial-gradient(circle at 50% 100%, rgba(255, 30, 130, .12), transparent 35%),
+        radial-gradient(circle at 15% 15%, rgba(255,70,170,.16), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(120,70,255,.18), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(255,30,130,.12), transparent 35%),
         #08050d;
 }
 
-/* Background lights */
 body::before,
 body::after {
     content: "";
@@ -66,8 +65,13 @@ body::after {
 }
 
 @keyframes floatLight {
-    from { transform: translate(0,0) scale(1); }
-    to { transform: translate(35px,25px) scale(1.15); }
+    from {
+        transform: translate(0,0) scale(1);
+    }
+
+    to {
+        transform: translate(35px,25px) scale(1.15);
+    }
 }
 
 .app {
@@ -81,7 +85,6 @@ body::after {
     overflow: hidden;
 }
 
-/* Header */
 .header {
     position: relative;
     z-index: 5;
@@ -89,7 +92,7 @@ body::after {
     align-items: center;
     justify-content: space-between;
     padding: 16px 17px;
-    background: rgba(10, 6, 18, .72);
+    background: rgba(10,6,18,.72);
     border-bottom: 1px solid rgba(255,255,255,.08);
     backdrop-filter: blur(20px);
 }
@@ -110,11 +113,10 @@ body::after {
     justify-content: center;
     font-weight: 900;
     font-size: 13px;
-    letter-spacing: -1px;
     color: #fff;
-    background: linear-gradient(135deg, #ff4baa, #743cff);
+    background: linear-gradient(135deg,#ff4baa,#743cff);
     box-shadow:
-        0 0 20px rgba(255, 65, 170, .35),
+        0 0 20px rgba(255,65,170,.35),
         inset 0 1px 1px rgba(255,255,255,.4);
 }
 
@@ -124,7 +126,6 @@ body::after {
     font-size: 9px;
     bottom: 5px;
     left: 6px;
-    opacity: .9;
 }
 
 .brand-title {
@@ -162,13 +163,11 @@ body::after {
     font-size: 19px;
 }
 
-/* Welcome */
 .welcome {
     position: relative;
     text-align: center;
     padding: 27px 20px 10px;
     z-index: 2;
-    transition: .4s ease;
 }
 
 .hero {
@@ -181,10 +180,14 @@ body::after {
     align-items: center;
     justify-content: center;
     background:
-        linear-gradient(145deg, rgba(255,255,255,.15), rgba(255,255,255,.03));
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.15),
+            rgba(255,255,255,.03)
+        );
     border: 1px solid rgba(255,255,255,.13);
     box-shadow:
-        0 0 45px rgba(255, 55, 169, .18),
+        0 0 45px rgba(255,55,169,.18),
         inset 0 1px 1px rgba(255,255,255,.2);
     backdrop-filter: blur(20px);
     animation: heroFloat 4s ease-in-out infinite;
@@ -208,19 +211,36 @@ body::after {
 }
 
 @keyframes heroFloat {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-7px); }
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-7px);
+    }
 }
 
 @keyframes pulse {
-    0%,100% { transform: scale(.98); opacity: .4; }
-    50% { transform: scale(1.06); opacity: 1; }
+    0%,100% {
+        transform: scale(.98);
+        opacity: .4;
+    }
+
+    50% {
+        transform: scale(1.06);
+        opacity: 1;
+    }
 }
 
 .welcome h1 {
     margin: 0;
     font-size: 25px;
-    background: linear-gradient(90deg, #fff, #ffb4dd, #b9a7ff);
+    background: linear-gradient(
+        90deg,
+        #fff,
+        #ffb4dd,
+        #b9a7ff
+    );
     -webkit-background-clip: text;
     color: transparent;
 }
@@ -231,7 +251,6 @@ body::after {
     font-size: 12px;
 }
 
-/* Chat */
 .messages {
     flex: 1;
     overflow-y: auto;
@@ -260,6 +279,7 @@ body::after {
         opacity: 0;
         transform: translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -286,7 +306,11 @@ body::after {
 
 .user .bubble {
     background:
-        linear-gradient(135deg, rgba(255,66,166,.18), rgba(116,61,255,.16));
+        linear-gradient(
+            135deg,
+            rgba(255,66,166,.18),
+            rgba(116,61,255,.16)
+        );
     border: 1px solid rgba(255,100,190,.15);
     border-bottom-right-radius: 6px;
     color: #f9edf6;
@@ -296,14 +320,17 @@ body::after {
 .ai .bubble {
     color: #fff;
     background:
-        linear-gradient(135deg, rgba(255,255,255,.105), rgba(255,255,255,.045));
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.105),
+            rgba(255,255,255,.045)
+        );
     border: 1px solid rgba(255,255,255,.11);
     border-bottom-left-radius: 6px;
     box-shadow: 0 8px 25px rgba(0,0,0,.18);
     backdrop-filter: blur(15px);
 }
 
-/* Typing */
 .typing {
     display: flex;
     gap: 5px;
@@ -328,11 +355,17 @@ body::after {
 }
 
 @keyframes typing {
-    0%,60%,100% { transform: translateY(0); opacity: .35; }
-    30% { transform: translateY(-5px); opacity: 1; }
+    0%,60%,100% {
+        transform: translateY(0);
+        opacity: .35;
+    }
+
+    30% {
+        transform: translateY(-5px);
+        opacity: 1;
+    }
 }
 
-/* Suggestions */
 .suggestions {
     position: relative;
     z-index: 4;
@@ -362,7 +395,6 @@ body::after {
     transform: scale(.96);
 }
 
-/* Input */
 .input-area {
     position: relative;
     z-index: 5;
@@ -409,7 +441,11 @@ textarea::placeholder {
     border-radius: 16px;
     color: #fff;
     font-size: 18px;
-    background: linear-gradient(135deg, #ff4baa, #7040ff);
+    background: linear-gradient(
+        135deg,
+        #ff4baa,
+        #7040ff
+    );
     box-shadow:
         0 0 18px rgba(255,65,170,.3),
         inset 0 1px 1px rgba(255,255,255,.3);
@@ -426,8 +462,8 @@ textarea::placeholder {
     color: #5f5362;
 }
 
-/* Mobile */
-@media (max-width: 480px) {
+@media (max-width:480px) {
+
     .header {
         padding: 13px 14px;
     }
@@ -462,116 +498,173 @@ textarea::placeholder {
 
 <div class="app">
 
-    <header class="header">
-        <div class="brand">
-            <div class="logo">OFF</div>
+<header class="header">
 
-            <div>
-                <div class="brand-title">OFFLINE AI</div>
-                <div class="brand-subtitle">
-                    <span class="dot"></span>
-                    <span class="online">همیشه آماده گفت‌وگو</span>
-                </div>
+    <div class="brand">
+
+        <div class="logo">OFF</div>
+
+        <div>
+
+            <div class="brand-title">
+                OFFLINE AI
             </div>
+
+            <div class="brand-subtitle">
+                <span class="dot"></span>
+                <span class="online">
+                    همیشه آماده گفت‌وگو
+                </span>
+            </div>
+
         </div>
 
-        <button class="clear-btn" onclick="clearChat()">⋮</button>
-    </header>
-
-    <section class="welcome" id="welcome">
-
-        <div class="hero">
-            <div class="hero-heart">♥</div>
-        </div>
-
-        <h1>به دنیای OFFLINE خوش آمدی</h1>
-
-        <p>
-            یک گفت‌وگوی متفاوت، آرام و هوشمندانه ✨
-        </p>
-
-    </section>
-
-    <main class="messages" id="messages"></main>
-
-    <div class="suggestions">
-        <button onclick="quickAsk('سلام، خودت را معرفی کن')">
-            ✨ معرفی خودت
-        </button>
-
-        <button onclick="quickAsk('برای یادگیری برنامه نویسی راهنمایی‌ام کن')">
-            💻 برنامه‌نویسی
-        </button>
-
-        <button onclick="quickAsk('یک متن زیبا و احساسی برایم بنویس')">
-            💜 متن زیبا
-        </button>
-
-        <button onclick="quickAsk('امروز چه چیز جدیدی می‌توانم یاد بگیرم؟')">
-            🌙 ایده جدید
-        </button>
     </div>
 
-    <div class="input-area">
+    <button
+        class="clear-btn"
+        onclick="clearChat()">
+        ⋮
+    </button>
 
-        <div class="input-box">
+</header>
 
-            <textarea
-                id="input"
-                placeholder="حرف دلت را بنویس..."
-                oninput="autoResize(this)"
-                onkeydown="handleKey(event)"
-            ></textarea>
 
-            <button class="send" onclick="sendMessage()">
-                ➤
-            </button>
+<section
+    class="welcome"
+    id="welcome">
 
-        </div>
+    <div class="hero">
+        <div class="hero-heart">♥</div>
+    </div>
 
-        <div class="footer">
-            OFFLINE AI • ساخته شده برای گفت‌وگوی هوشمند
-        </div>
+    <h1>
+        به دنیای OFFLINE خوش آمدی
+    </h1>
 
+    <p>
+        یک گفت‌وگوی متفاوت، آرام و هوشمندانه ✨
+    </p>
+
+</section>
+
+
+<main
+    class="messages"
+    id="messages">
+</main>
+
+
+<div class="suggestions">
+
+    <button
+        onclick="quickAsk('سلام، خودت را معرفی کن')">
+        ✨ معرفی خودت
+    </button>
+
+    <button
+        onclick="quickAsk('سازنده تو کیست؟')">
+        👑 سازنده
+    </button>
+
+    <button
+        onclick="quickAsk('برای یادگیری برنامه نویسی راهنمایی‌ام کن')">
+        💻 برنامه‌نویسی
+    </button>
+
+    <button
+        onclick="quickAsk('یک متن زیبا و احساسی برایم بنویس')">
+        💜 متن زیبا
+    </button>
+
+</div>
+
+
+<div class="input-area">
+
+    <div class="input-box">
+
+        <textarea
+            id="input"
+            placeholder="حرف دلت را بنویس..."
+            oninput="autoResize(this)"
+            onkeydown="handleKey(event)"
+        ></textarea>
+
+        <button
+            class="send"
+            onclick="sendMessage()">
+            ➤
+        </button>
+
+    </div>
+
+    <div class="footer">
+        OFFLINE AI • ساخته‌شده توسط ریس آفلاین کندزی
     </div>
 
 </div>
 
+</div>
+
+
 <script>
 
-const input = document.getElementById("input");
-const messages = document.getElementById("messages");
-const welcome = document.getElementById("welcome");
+const input =
+    document.getElementById("input");
+
+const messages =
+    document.getElementById("messages");
+
+const welcome =
+    document.getElementById("welcome");
+
 
 function addMessage(text, type) {
 
     welcome.style.display = "none";
 
-    const row = document.createElement("div");
-    row.className = "message " + type;
+    const row =
+        document.createElement("div");
 
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
+    row.className =
+        "message " + type;
 
-    bubble.textContent = text;
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "bubble";
+
+    bubble.textContent =
+        text;
 
     row.appendChild(bubble);
+
     messages.appendChild(row);
 
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
 
     return bubble;
 }
+
 
 function addTyping() {
 
     welcome.style.display = "none";
 
-    const row = document.createElement("div");
-    row.className = "message ai";
+    const row =
+        document.createElement("div");
 
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
+    row.className =
+        "message ai";
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "bubble";
 
     bubble.innerHTML = `
         <div class="typing">
@@ -582,85 +675,110 @@ function addTyping() {
     `;
 
     row.appendChild(bubble);
+
     messages.appendChild(row);
 
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
 
     return row;
 }
 
+
 function quickAsk(text) {
 
     input.value = text;
-    autoResize(input);
-    sendMessage();
 
+    autoResize(input);
+
+    sendMessage();
 }
+
 
 function handleKey(event) {
 
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (
+        event.key === "Enter" &&
+        !event.shiftKey
+    ) {
 
         event.preventDefault();
+
         sendMessage();
-
     }
-
 }
+
 
 function autoResize(element) {
 
     element.style.height = "44px";
 
     element.style.height =
-        Math.min(element.scrollHeight, 110) + "px";
-
+        Math.min(
+            element.scrollHeight,
+            110
+        ) + "px";
 }
+
 
 async function sendMessage() {
 
-    const text = input.value.trim();
+    const text =
+        input.value.trim();
 
     if (!text) return;
 
-    addMessage(text, "user");
+    addMessage(
+        text,
+        "user"
+    );
 
     input.value = "";
-    input.style.height = "44px";
 
-    const typing = addTyping();
+    input.style.height =
+        "44px";
+
+    const typing =
+        addTyping();
 
     try {
 
-        const response = await fetch("/chat", {
+        const response =
+            await fetch(
+                "/chat",
+                {
+                    method: "POST",
 
-            method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+                    body: JSON.stringify({
+                        message: text
+                    })
+                }
+            );
 
-            body: JSON.stringify({
-                message: text
-            })
-
-        });
-
-        const data = await response.json();
+        const data =
+            await response.json();
 
         typing.remove();
 
         if (data.reply) {
 
-            addMessage(data.reply, "ai");
+            addMessage(
+                data.reply,
+                "ai"
+            );
 
         } else {
 
             addMessage(
-                data.error || "یک خطای ناشناخته رخ داد.",
+                data.error ||
+                "یک خطای ناشناخته رخ داد.",
                 "ai"
             );
-
         }
 
     } catch (error) {
@@ -671,21 +789,23 @@ async function sendMessage() {
             "ارتباط با سرور برقرار نشد. دوباره تلاش کن.",
             "ai"
         );
-
     }
-
 }
+
 
 function clearChat() {
 
-    if (confirm("گفت‌وگو پاک شود؟")) {
+    if (
+        confirm(
+            "گفت‌وگو پاک شود؟"
+        )
+    ) {
 
         messages.innerHTML = "";
 
-        welcome.style.display = "block";
-
+        welcome.style.display =
+            "block";
     }
-
 }
 
 </script>
@@ -705,7 +825,10 @@ def chat():
 
     data = request.get_json(silent=True) or {}
 
-    message = data.get("message", "").strip()
+    message = data.get(
+        "message",
+        ""
+    ).strip()
 
     if not message:
         return jsonify({
@@ -714,32 +837,63 @@ def chat():
 
     if not GROQ_API_KEY:
         return jsonify({
-            "error": "کلید GROQ_API_KEY در Render تنظیم نشده است."
+            "error":
+                "کلید GROQ_API_KEY در Render تنظیم نشده است."
         }), 500
 
     try:
 
         response = requests.post(
-
             "https://api.groq.com/openai/v1/chat/completions",
 
             headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json"
+                "Authorization":
+                    f"Bearer {GROQ_API_KEY}",
+
+                "Content-Type":
+                    "application/json"
             },
 
             json={
 
-                "model": "llama-3.3-70b-versatile",
+                "model":
+                    "llama-3.3-70b-versatile",
 
                 "messages": [
 
                     {
                         "role": "system",
-                        "content":
-                        "تو دستیار هوشمند OFFLINE AI هستی. "
-                        "با کاربر به زبان خودش صحبت کن. "
-                        "پاسخ‌ها واضح، دوستانه، مفید و محترمانه باشند."
+
+                        "content": """
+تو OFFLINE AI هستی؛ یک دستیار هوش مصنوعی مدرن که با هدف ارائه تجربه‌ای هوشمند، زیبا و متفاوت ساخته شده‌ای.
+
+هویت رسمی برند:
+
+نام محصول:
+OFFLINE AI
+
+سازنده و بنیان‌گذار:
+ریس آفلاین کندزی
+
+اگر کاربر درباره سازنده، بنیان‌گذار، خالق یا صاحب OFFLINE AI پرسید، پاسخ بده:
+
+«سازنده و بنیان‌گذار من ریس آفلاین کندزی است؛ خالق پروژه OFFLINE AI.»
+
+اگر کاربر پرسید «تو کی هستی؟» یا درباره OFFLINE AI سؤال کرد، می‌توانی بگویی:
+
+«من OFFLINE AI هستم؛ یک دستیار هوش مصنوعی مدرن که با هدف ارائه تجربه‌ای هوشمند، زیبا و متفاوت ساخته شده‌ام. سازنده و بنیان‌گذار من ریس آفلاین کندزی است؛ کسی که ایده OFFLINE AI را به یک پروژه واقعی تبدیل کرده است. هدف OFFLINE AI ساختن تجربه‌ای ساده، قدرتمند و قابل استفاده برای همه است.»
+
+با کاربر به زبان خودش صحبت کن.
+
+پاسخ‌ها باید:
+واضح،
+دوستانه،
+محترمانه،
+طبیعی،
+و مفید باشند.
+
+درباره سازنده اطلاعاتی که در این دستور مشخص نشده را از خودت اختراع نکن.
+"""
                     },
 
                     {
@@ -752,11 +906,9 @@ def chat():
                 "temperature": 0.7,
 
                 "max_tokens": 1500
-
             },
 
             timeout=60
-
         )
 
         result = response.json()
@@ -773,11 +925,13 @@ def chat():
             )
 
             return jsonify({
-                "error": error_message
+                "error":
+                    error_message
             }), 500
 
         reply = (
-            result["choices"][0]["message"]["content"]
+            result["choices"][0]
+            ["message"]["content"]
         )
 
         return jsonify({
@@ -787,23 +941,28 @@ def chat():
     except requests.exceptions.Timeout:
 
         return jsonify({
-            "error": "زمان پاسخ‌گویی تمام شد. دوباره تلاش کن."
+            "error":
+                "زمان پاسخ‌گویی تمام شد. دوباره تلاش کن."
         }), 504
 
     except Exception:
 
         return jsonify({
-            "error": "خطایی در سرور رخ داد."
+            "error":
+                "خطایی در سرور رخ داد."
         }), 500
 
 
 if __name__ == "__main__":
 
     port = int(
-        os.environ.get("PORT", 5000)
+        os.environ.get(
+            "PORT",
+            5000
+        )
     )
 
     app.run(
         host="0.0.0.0",
         port=port
-    )
+)
