@@ -1,15 +1,15 @@
 from flask import Flask, request, jsonify, render_template_string
+from openai import OpenAI
 import os
-import requests
 
 app = Flask(__name__)
 
-HTML = r"""
+HTML = """
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OFFLINE AI</title>
 
 <style>
@@ -18,52 +18,42 @@ HTML = r"""
 body{
     margin:0;
     height:100vh;
-    overflow:hidden;
     font-family:Tahoma,Arial,sans-serif;
-    background:
-      radial-gradient(circle at 15% 20%,#403080 0,transparent 35%),
-      radial-gradient(circle at 85% 80%,#164b70 0,transparent 35%),
-      linear-gradient(135deg,#080b18,#10152b 55%,#07151f);
     color:white;
+    background:
+      radial-gradient(circle at 10% 10%,#553c9a,transparent 35%),
+      radial-gradient(circle at 90% 90%,#176080,transparent 35%),
+      #080b18;
 }
 
 .app{
-    width:100%;
-    max-width:850px;
+    max-width:900px;
     height:100vh;
     margin:auto;
     display:flex;
     flex-direction:column;
-    background:rgba(255,255,255,.055);
+    background:rgba(255,255,255,.06);
     backdrop-filter:blur(25px);
-    -webkit-backdrop-filter:blur(25px);
-    border-left:1px solid rgba(255,255,255,.08);
-    border-right:1px solid rgba(255,255,255,.08);
 }
 
 header{
-    height:72px;
-    flex-shrink:0;
     display:flex;
     align-items:center;
     gap:12px;
-    padding:12px 18px;
+    padding:14px 18px;
+    border-bottom:1px solid rgba(255,255,255,.12);
     background:rgba(255,255,255,.08);
-    border-bottom:1px solid rgba(255,255,255,.1);
-    backdrop-filter:blur(20px);
 }
 
 .logo{
-    width:45px;
-    height:45px;
-    border-radius:15px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width:46px;
+    height:46px;
+    display:grid;
+    place-items:center;
+    border-radius:16px;
     font-size:23px;
     background:rgba(255,255,255,.12);
-    border:1px solid rgba(255,255,255,.18);
-    box-shadow:0 8px 25px rgba(0,0,0,.2);
+    border:1px solid rgba(255,255,255,.2);
 }
 
 .title{
@@ -72,68 +62,62 @@ header{
 }
 
 .status{
+    color:#78ffc0;
     font-size:11px;
-    color:#83ffc1;
-    margin-top:3px;
+    margin-top:4px;
 }
 
 .chat{
     flex:1;
     overflow-y:auto;
-    padding:20px 15px 25px;
-    scroll-behavior:smooth;
-}
-
-.chat::-webkit-scrollbar{width:4px}
-.chat::-webkit-scrollbar-thumb{
-    background:rgba(255,255,255,.2);
-    border-radius:10px;
+    padding:20px 14px;
 }
 
 .message{
     display:flex;
-    margin:10px 0;
-    animation:appear .25s ease;
+    margin:11px 0;
 }
 
-@keyframes appear{
-    from{opacity:0;transform:translateY(8px)}
-    to{opacity:1;transform:translateY(0)}
+.user{
+    justify-content:flex-start;
 }
 
-.message.user{justify-content:flex-start}
-.message.ai{justify-content:flex-end}
+.ai{
+    justify-content:flex-end;
+}
 
 .bubble{
-    max-width:78%;
-    padding:12px 15px;
+    max-width:82%;
+    padding:13px 16px;
     border-radius:20px;
-    line-height:1.8;
+    line-height:1.9;
     font-size:14px;
     white-space:pre-wrap;
-    box-shadow:0 8px 25px rgba(0,0,0,.15);
+
+    background:rgba(255,255,255,.09);
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(20px);
+
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
 }
 
 .user .bubble{
-    background:rgba(100,170,255,.15);
-    border:1px solid rgba(150,200,255,.22);
+    background:rgba(80,150,255,.16);
     border-bottom-right-radius:5px;
 }
 
 .ai .bubble{
-    background:rgba(255,255,255,.095);
-    border:1px solid rgba(255,255,255,.16);
     border-bottom-left-radius:5px;
 }
 
 .typing{
     display:none;
     width:max-content;
-    padding:10px 16px;
     margin:8px 0 8px auto;
+    padding:9px 15px;
     border-radius:18px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.09);
+    border:1px solid rgba(255,255,255,.15);
 }
 
 .dot{
@@ -142,7 +126,7 @@ header{
     height:6px;
     margin:0 2px;
     border-radius:50%;
-    background:#ddd;
+    background:white;
     animation:bounce 1s infinite;
 }
 
@@ -150,39 +134,44 @@ header{
 .dot:nth-child(3){animation-delay:.3s}
 
 @keyframes bounce{
-    0%,60%,100%{transform:translateY(0);opacity:.4}
-    30%{transform:translateY(-5px);opacity:1}
+    0%,60%,100%{
+        transform:translateY(0);
+        opacity:.4
+    }
+    30%{
+        transform:translateY(-5px);
+        opacity:1
+    }
 }
 
 .bottom{
     padding:12px;
-    background:rgba(255,255,255,.055);
-    border-top:1px solid rgba(255,255,255,.1);
-    backdrop-filter:blur(20px);
+    border-top:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.06);
 }
 
-.inputbox{
+.input-box{
     display:flex;
-    align-items:center;
     gap:8px;
+    align-items:center;
     padding:7px;
-    border-radius:22px;
+    border-radius:24px;
+
     background:rgba(255,255,255,.09);
-    border:1px solid rgba(255,255,255,.15);
-    box-shadow:0 10px 30px rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(20px);
 }
 
 textarea{
     flex:1;
+    height:44px;
     resize:none;
-    height:42px;
-    max-height:110px;
     border:0;
     outline:0;
     background:transparent;
     color:white;
-    padding:10px 12px;
-    font-family:inherit;
+    padding:11px;
+    font-family:Tahoma;
     font-size:14px;
 }
 
@@ -191,47 +180,25 @@ textarea::placeholder{
 }
 
 .send{
-    width:43px;
-    height:43px;
+    width:45px;
+    height:45px;
     border:0;
     border-radius:16px;
     cursor:pointer;
     color:white;
-    font-size:18px;
-    background:rgba(120,170,255,.2);
-    border:1px solid rgba(180,210,255,.25);
-    transition:.2s;
+    font-size:19px;
+    background:rgba(100,160,255,.25);
+    border:1px solid rgba(255,255,255,.2);
 }
 
-.send:hover{
-    transform:scale(1.05);
-    background:rgba(120,170,255,.3);
-}
-
-.send:active{transform:scale(.94)}
-
-.welcome{
-    text-align:center;
-    margin:30px auto;
-    max-width:500px;
-}
-
-.welcome h1{
-    font-size:28px;
-    margin-bottom:8px;
-}
-
-.welcome p{
-    color:rgba(255,255,255,.65);
-    line-height:1.8;
-    font-size:13px;
+.send:active{
+    transform:scale(.94);
 }
 
 @media(max-width:600px){
-    .bubble{max-width:88%}
-    header{height:65px}
-    .chat{padding:15px 10px}
-    .welcome h1{font-size:24px}
+    .bubble{
+        max-width:90%;
+    }
 }
 </style>
 </head>
@@ -248,25 +215,20 @@ textarea::placeholder{
     </div>
 </header>
 
-<div class="chat" id="chat">
-
-    <div class="welcome">
-        <h1>سلام 👋</h1>
-        <p>
-            من OFFLINE AI هستم.<br>
-            می‌تونی باهام گپ بزنی، سؤال بپرسی،
-            شوخی کنی یا درباره موضوعات مختلف صحبت کنی.
-        </p>
-    </div>
+<div id="chat" class="chat">
 
     <div class="message ai">
         <div class="bubble">
-            سلام! 😊 خوش آمدی.<br>
-            بگو ببینم امروز درباره چی گپ بزنیم؟
+سلام 👋
+من OFFLINE AI هستم.
+
+هر چیزی خواستی بگو؛
+می‌تونیم گپ بزنیم، شوخی کنیم،
+داستان بسازیم یا درباره موضوعات مختلف صحبت کنیم 😊
         </div>
     </div>
 
-    <div class="typing" id="typing">
+    <div id="typing" class="typing">
         <span class="dot"></span>
         <span class="dot"></span>
         <span class="dot"></span>
@@ -275,85 +237,128 @@ textarea::placeholder{
 </div>
 
 <div class="bottom">
-    <div class="inputbox">
-        <textarea id="input" placeholder="پیامت را بنویس..." rows="1"></textarea>
-        <button class="send" onclick="sendMessage()">➤</button>
+    <div class="input-box">
+        <textarea id="message"
+        placeholder="پیامت را بنویس..."></textarea>
+
+        <button class="send"
+        onclick="sendMessage()">➤</button>
     </div>
 </div>
 
 </div>
 
 <script>
-const input=document.getElementById("input");
-const chat=document.getElementById("chat");
-const typing=document.getElementById("typing");
 
-input.addEventListener("keydown",function(e){
-    if(e.key==="Enter" && !e.shiftKey){
+const input =
+document.getElementById("message");
+
+const chat =
+document.getElementById("chat");
+
+const typing =
+document.getElementById("typing");
+
+input.addEventListener("keydown", function(e){
+
+    if(e.key === "Enter" && !e.shiftKey){
+
         e.preventDefault();
-        sendMessage();
-    }
-});
 
-input.addEventListener("input",function(){
-    this.style.height="42px";
-    this.style.height=Math.min(this.scrollHeight,110)+"px";
+        sendMessage();
+
+    }
+
 });
 
 function addMessage(text,type){
-    const row=document.createElement("div");
-    row.className="message "+type;
 
-    const bubble=document.createElement("div");
-    bubble.className="bubble";
-    bubble.textContent=text;
+    const row =
+    document.createElement("div");
+
+    row.className =
+    "message " + type;
+
+    const bubble =
+    document.createElement("div");
+
+    bubble.className =
+    "bubble";
+
+    bubble.textContent =
+    text;
 
     row.appendChild(bubble);
+
     chat.insertBefore(row,typing);
 
-    chat.scrollTop=chat.scrollHeight;
+    chat.scrollTop =
+    chat.scrollHeight;
 }
 
 async function sendMessage(){
 
-    const text=input.value.trim();
-    if(!text) return;
+    const text =
+    input.value.trim();
+
+    if(!text)return;
 
     addMessage(text,"user");
 
     input.value="";
-    input.style.height="42px";
 
     typing.style.display="block";
-    chat.scrollTop=chat.scrollHeight;
+
+    chat.scrollTop =
+    chat.scrollHeight;
 
     try{
-        const response=await fetch("/chat",{
+
+        const response =
+        await fetch("/chat",{
+
             method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({message:text})
+
+            headers:{
+                "Content-Type":
+                "application/json"
+            },
+
+            body:JSON.stringify({
+                message:text
+            })
+
         });
 
-        const data=await response.json();
+        const data =
+        await response.json();
 
         typing.style.display="none";
-        addMessage(data.reply || "فعلاً نتوانستم پاسخ بدهم 😅","ai");
+
+        addMessage(
+            data.reply ||
+            "پاسخی دریافت نشد.",
+            "ai"
+        );
 
     }catch(error){
 
         typing.style.display="none";
 
         addMessage(
-            "فعلاً اتصال هوش مصنوعی آماده نیست؛ اما صفحه چت درست کار می‌کند. 🤖",
+            "اتصال به هوش مصنوعی برقرار نشد.",
             "ai"
         );
+
     }
 }
+
 </script>
 
 </body>
 </html>
 """
+
 
 @app.route("/")
 def home():
@@ -362,19 +367,88 @@ def home():
 
 @app.route("/chat", methods=["POST"])
 def chat():
+
     data = request.get_json(silent=True) or {}
-    message = data.get("message", "").strip()
+
+    message = str(
+        data.get("message","")
+    ).strip()
 
     if not message:
-        return jsonify({"reply": "پیامی دریافت نکردم 🙂"})
 
-    # پاسخ آزمایشی
-    # بعداً این قسمت را به API هوش مصنوعی وصل می‌کنیم.
-    reply = f"پیامت را دریافت کردم 😊\n\nگفتی: {message}"
+        return jsonify(
+            reply="پیامی دریافت نکردم 🙂"
+        )
 
-    return jsonify({"reply": reply})
+    api_key = os.environ.get(
+        "OPENAI_API_KEY"
+    )
+
+    if not api_key:
+
+        return jsonify(
+            reply="کلید OPENAI_API_KEY در Render تنظیم نشده است."
+        )
+
+    try:
+
+        client = OpenAI(
+            api_key=api_key
+        )
+
+        response = client.responses.create(
+
+            model=os.environ.get(
+                "OPENAI_MODEL",
+                "gpt-5.6"
+            ),
+
+            instructions="""
+تو OFFLINE AI هستی.
+
+یک دستیار فارسی‌زبان دوستانه،
+باهوش، محترم و خوش‌صحبت باش.
+
+با کاربر طبیعی و صمیمی صحبت کن،
+اما وارد نقش‌آفرینی عاشقانه نشو.
+
+می‌توانی:
+- گپ بزنی
+- شوخی سالم کنی
+- داستان بسازی
+- به سؤال‌ها پاسخ بدهی
+- موضوعات آموزشی را توضیح بدهی
+- وقتی کاربر ناراحت است با مهربانی پاسخ بدهی
+
+پاسخ‌ها را واضح و متناسب با سؤال کاربر بده.
+""",
+
+            input=message
+        )
+
+        return jsonify(
+            reply=response.output_text
+        )
+
+    except Exception as error:
+
+        print(error)
+
+        return jsonify(
+            reply="فعلاً در اتصال به هوش مصنوعی مشکلی پیش آمده."
+        ),500
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+
+    port = int(
+        os.environ.get(
+            "PORT",
+            5000
+        )
+    )
+
+    app.run(
+        host="0.0.0.0",
+        port=port
+    )
